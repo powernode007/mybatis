@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpn.mapper.EmpMapper">
+    <!--//添加
+    boolean addEmp(Emp  emp);
+    更新默认的返回值是int
+    -->
+    <insert id="addEmp" parameterType="com.bjpn.bean.Emp">
+        insert into emp(emp_name,emp_job,emp_sal) values(#{empName},#{empJob},#{empSal})
+    </insert>
+    <!--//查询
+    List<Emp> findAllEmp();-->
+    <select id="findAllEmp" resultType="com.bjpn.bean.Emp">
+        select emp_no empNo, emp_name empName, emp_job empJob,
+        emp_photo empPhoto, emp_hiredate empHiredate, emp_sal empSal, dept_no deptNo
+        from emp
+    </select>
+    <!--//查询
+    List<Emp> findAllEmpBySal(double empSal);-->
+    <!--我要给emp对象的属性 配置映射关系-->
+    <resultMap id="empResultMap" type="com.bjpn.bean.Emp">
+        <!--id:主键  一张表中只用一个主键
+               column：字段    数据库字段
+               property:属性   实体类属性
+          -->
+        <id column="emp_no" property="empNo"/>
+        <result column="emp_name" property="empName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        <result column="emp_job" property="empJob"/>
+        <result column="emp_photo" property="empPhoto"/>
+        <result column="emp_hiredate" property="empHiredate"/>
+        <result column="emp_sal" property="empSal"/>
+        <result column="dept_no" property="deptNo"/>
+    </resultMap>
+    <sql id="base_column_list">
+        emp_no, emp_name, emp_job, emp_photo, emp_hiredate, emp_sal, dept_no
+    </sql>
+    <sql id="where_column_name">
+        emp_name =#{empName}
+    </sql>
+    <sql id="where_column_job">
+        emp_job =#{empJob}
+    </sql>
+    <select id="findAllEmpBySal" parameterType="double" resultMap="empResultMap">
+        select
+            <include refid="base_column_list"/>
+        from emp where emp_sal > #{empSal}
+    </select>
+    <!--//查询名字和工种
+    List<Emp> findAllEmpByNameAndJob(Emp emp);-->
+    <!--where标签的作用
+       1、提供where关键字
+       2、吃掉第一个条件的and
+       -->
+   <!-- <select id="findAllEmpByNameAndJob" parameterType="com.bjpn.bean.Emp" resultMap="empResultMap">
+        select   <include refid="base_column_list"/>
+        from emp
+        <where>
+            <if test="empName!=null and empName!=''">
+                and emp_name =#{empName}
+            </if>
+            &lt;!&ndash;你是否传值&ndash;&gt;
+            <if test="empJob!=null and empJob!=''">
+                 and emp_job =#{empJob}
+            </if>
+        </where>
+    </select>-->
+    <select id="findAllEmpByNameAndJob" parameterType="com.bjpn.bean.Emp" resultMap="empResultMap">
+        select   <include refid="base_column_list"/>
+        from emp where 1=1
+        <trim prefixOverrides="and">
+            <if test="empName!=null and empName!=''">
+                and emp_name =#{empName}
+            </if>
+            <!--你是否传值-->
+            <if test="empJob!=null and empJob!=''">
+                and emp_job =#{empJob}
+            </if>
+        </trim>
+    </select>
+
+    <!--//修改
+    boolean  updateEmp(Emp emp);
+    不提供值的字段 不需要改
+    set标签：1提供set关键字
+            2 吃掉最后一个修改项的逗号
+    -->
+    <!--<update id="updateEmp" parameterType="com.bjpn.bean.Emp">
+        update emp
+        <set>
+            <if test="empName!=null and empName!=''">
+            emp_name=#{empName},
+            </if>
+            <if test="empJob!=null and empJob!=''">
+            emp_job =#{empJob},
+            </if>
+            <if test="empPhoto!=null and empPhoto!=''">
+            emp_photo=#{empPhoto},
+            </if>
+            <if test="empHiredate!=null and empHiredate!=''">
+             emp_hiredate=#{empHiredate},
+            </if>
+            <if test="empSal!=0.0">
+            emp_sal=#{empSal},
+            </if>
+            <if test="deptNo!=0">
+            dept_no=#{deptNo},
+            </if>
+        </set>
+        where emp_no =#{empNo}
+    </update>-->
+    <!--trim-->
+    <update id="updateEmp" parameterType="com.bjpn.bean.Emp">
+        update emp set
+        <trim suffixOverrides=",">
+            <if test="empName!=null and empName!=''">
+                emp_name=#{empName},
+            </if>
+            <if test="empJob!=null and empJob!=''">
+                emp_job =#{empJob},
+            </if>
+            <if test="empPhoto!=null and empPhoto!=''">
+                emp_photo=#{empPhoto},
+            </if>
+            <if test="empHiredate!=null and empHiredate!=''">
+                emp_hiredate=#{empHiredate},
+            </if>
+            <if test="empSal!=0.0">
+                emp_sal=#{empSal},
+            </if>
+            <if test="deptNo!=0">
+                dept_no=#{deptNo},
+            </if>
+        </trim>
+        where emp_no =#{empNo}
+    </update>
+    <!--非空字段添加-->
+    <!--//非空字段添加
+    boolean addEmpSective(Emp emp);-->
+    <insert id="addEmpSective" parameterType="com.bjpn.bean.Emp">
+        insert into emp
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="empName!=null and empName!=''">
+                emp_name,
+            </if>
+            <if test="empJob!=null and empJob!=''">
+                emp_job,
+            </if>
+            <if test="empPhoto!=null and empPhoto!=''">
+                emp_photo,
+            </if>
+            <if test="empHiredate!=null and empHiredate!=''">
+                emp_hiredate,
+            </if>
+            <if test="empSal!=0.0">
+                emp_sal,
+            </if>
+            <if test="deptNo!=0">
+                dept_no,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="empName!=null and empName!=''">
+                #{empName},
+            </if>
+            <if test="empJob!=null and empJob!=''">
+                #{empJob},
+            </if>
+            <if test="empPhoto!=null and empPhoto!=''">
+                #{empPhoto},
+            </if>
+            <if test="empHiredate!=null and empHiredate!=''">
+                #{empHiredate},
+            </if>
+            <if test="empSal!=0.0">
+                #{empSal},
+            </if>
+            <if test="deptNo!=0">
+                #{deptNo},
+            </if>
+        </trim>
+    </insert>
+   <!-- //批量查询
+    List<Emp> findEmpByArray(int[] intArr);  传递的是一个数组或集合  这个参数需要被遍历  不要写parameterType
+        foreach:用来遍历数组或集合  只能遍历collection集合
+                collection：array  collection list set  只有这几种写法
+                item:每次遍历的赋值变量
+                open:前缀标识  一般(
+                close:后缀标识  一般是)
+                separator:分隔符号
+    -->
+    <select id="findEmpByArray" resultMap="empResultMap">
+        select *  from emp
+        where emp_no in
+        <foreach collection="array" item="aaa" open="(" close=")" separator=",">
+            #{aaa}
+        </foreach>
+        <!--(1,2,3,4)-->
+    </select>
+
+</mapper>

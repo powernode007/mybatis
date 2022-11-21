@@ -1,0 +1,7 @@
+com\bjpn\test\TestDemo2.class
+com\bjpn\test\TestDemo1.class
+com\bjpn\test\TestDemo3.class
+com\bjpn\bean\User.class
+com\bjpn\mapper\UserMapper.class
+com\bjpn\mapper\StudentMapper1.class
+com\bjpn\bean\Student.class

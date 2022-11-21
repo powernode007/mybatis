@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpn.mapper.UserMapper">
+    <!--//查询所有
+    List<User> findAllUser();-->
+    <select id="findAllUser" resultType="com.bjpn.bean.User">
+        select *  from userinfo
+    </select>
+    <!--//删除
+    int delUserById(int uid);-->
+    <delete id="delUserById" >
+        delete from userinfo where userid=${value}
+    </delete>
+    <!--//添加
+    int  addUser(User user);
+        #{}:?占位符  调用的PreparedStatement  预编译对象
+            #{值}：
+                当参数是对象类型，值是对象的属性名
+                当参数是普通类型，#{任意值}
+        ${}:Statement 执行对象  拼接sql参数  会引起sql注入式攻击
+            ${值}：
+                当参数是对象类型，值是对象的属性名
+                当参数是普通类型，${任意值}或${value}
+    -->
+    <insert id="addUser"  parameterType="com.bjpn.bean.User">
+        insert into userinfo(usercode,userpwd,username) values(#{userCode},#{userPwd},'${userName}')
+    </insert>
+   <!-- //登录
+    User loginUser(String userCode,String userPwd);-->
+    <!--<select id="loginUser" resultType="string,string">
+
+    </select>-->
+    <!--//map登录
+    User loginUserByMap(Map map);-->
+    <select id="loginUserByMap" parameterType="map" resultType="com.bjpn.bean.User">
+        select *  from userinfo where usercode=#{codeKey} and userpwd=#{pwdKey}
+    </select>
+    <!--//登录  参数是被注解直接注入到sql语句中的  parameterType不能写了
+    User loginUser(@Param("userCode") String userCode, @Param("pwd") String userPwd);-->
+    <select id="loginUser"  resultType="com.bjpn.bean.User">
+        select *  from userinfo where usercode=#{userCode} and userpwd=#{pwd}
+    </select>
+</mapper>

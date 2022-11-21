@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:命名空间 是当前mapper.xml的名字  唯一不重复-->
+<mapper namespace="aaa">
+    <!--查询
+        id:是唯一标识  相当于dao中的方法名
+        resultType:查询结果的映射类型  写类的全限定名
+                    字段名和同名属性名会自动进行赋值映射
+    -->
+    <select id="findStudent" resultType="com.bjpn.bean.Student">
+        select sid,sname,ssex  from student
+    </select>
+    <!--添加的方法
+        parameterType:参数类型  可以是对象   也可以是基本数据类型
+        ${}：statement对象  执行对象  sql拼装的
+        #{}：?占位符  底层使用的PreparedStatement 预编译对象
+        增删改的语句  执行结果默认是int
+    -->
+    <insert id="addStudent" parameterType="com.bjpn.bean.Student" >
+        insert into student(sname,ssex) values(#{sname},#{ssex})
+    </insert>
+    <!--删除   delStudent(int xxx)-->
+    <delete id="delStudent" parameterType="int">
+        delete form student where sid=#{xxx}
+    </delete>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--当前这个mapper.xml是给StudentMapper1.java接口 提供sql语句的
+    mybatis会根据sql语句 根据jdbc对象 帮我生成接口的实现类
+    namespace：必须是接口类的全限定名  mybatis要使用反射机制  生成该接口的实现类
+-->
+<mapper namespace="com.bjpn.mapper.StudentMapper1">
+    <!-- int delStudent(int uid);
+        mapper.xml文件是给对应接口提供sql的  那么它们的方法名  参数列表返回值都必须一致
+    -->
+    <delete id="delStudent" parameterType="int">
+        delete from student where sid=#{sid}
+    </delete>
+    <!--int updateStudentById(Student student);-->
+    <update id="updateStudentById" parameterType="com.bjpn.bean.Student">
+        update student set sname=#{sname},ssex=#{ssex} where sid=#{sid}
+    </update>
+</mapper>
